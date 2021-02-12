@@ -1,35 +1,88 @@
 from packetframer.decodeframe import DecodeFrame
 from packetframer.encodeframe import EncodeFrame
+
+from packetframer.globals import *
+from packetframer.exceptions import *
 from packetframer.framereader import FrameReader
 
-import time
+class PacketFramer:
+    def __init__(self,
+                 fh_read=None,
+                 fh_write=None,
+                 sh=None,
+                 max_frame_size=64,
+                 error_correction=12,
+                 checksum_size=4):
+        # File descriptor
+        self.fh_read = fh_read
+        self.fh_write = fh_write
+        # Socket
+        self.sh = sh
 
-class Main:
-    def __init__(self):
-        pass
+        self.frame_reader = FrameReader()
 
-frame_reader = FrameReader()
-frame_reader.feed(b"\x00" * 20)
+    def read_bytes(self, i):
+        if self.fh_read:
+            return self.fh_read.read(i)
+        elif self.sh:
+            return self.sh.recv(i)
 
-frame = EncodeFrame()
-frame.payload = b"Hello there packet boy!"
-# print(frame.digest, len(frame.digest))
+    def write_bytes(self, data):
+        if self.fh_write:
+            self.fh_write.write(data)
+        elif self.sh:
+            self.sh.write(data)
 
-frame_reader.feed(frame.digest)
-frame_reader.feed(frame.digest)
-frame_reader.feed(frame.digest)
-frame_reader.feed(frame.digest)
-frame_reader.feed(frame.digest)
+    def read_packet(self):
+        while True:
+            payload = self.read_bytes(MAX_FRAME_SIZE)
 
-while True:
-    while True:
-        frame = frame_reader.read_frame()
+            if len(payload) == 0:
+                return
 
-        if frame:
-            print(frame.payload)
-        else:
-            break
+            self.frame_reader.feed(payload)
 
-    time.sleep(.01)
+            frame = self.frame_reader.read_frame()
 
-# print(DecodeFrame(frame.digest).payload)
+            if frame:
+                return frame
+
+    def write_packet(self, data):
+        frame = EncodeFrame()
+        frame.payload = data
+        self.write_bytes(frame.digest)
+
+# from packetframer.framereader import FrameReader
+#
+#
+# import time
+#
+# class Main:
+#     def __init__(self):
+#         pass
+#
+# frame_reader = FrameReader()
+# frame_reader.feed(b"\x00" * 20)
+#
+# frame = EncodeFrame()
+# frame.payload = b"Hello there packet boy!"
+# # print(frame.digest, len(frame.digest))
+#
+# frame_reader.feed(frame.digest)
+# frame_reader.feed(frame.digest)
+# frame_reader.feed(frame.digest)
+# frame_reader.feed(frame.digest)
+# frame_reader.feed(frame.digest)
+#
+# while True:
+#     while True:
+#         frame = frame_reader.read_frame()
+#
+#         if frame:
+#             print(frame.payload)
+#         else:
+#             break
+#
+#     time.sleep(.01)
+#
+# # print(DecodeFrame(frame.digest).payload)

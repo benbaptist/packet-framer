@@ -23,4 +23,4 @@ class FrameReader:
 
                 continue
 
-            return frame
+            return frame.payload
