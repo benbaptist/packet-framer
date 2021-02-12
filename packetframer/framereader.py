@@ -1,4 +1,5 @@
 from packetframer.globals import *
+from packetframer.exceptions import *
 from packetframer.decodeframe import DecodeFrame
 
 class FrameReader:
@@ -17,7 +18,9 @@ class FrameReader:
 
                 self.buffer = self.buffer[MAX_FRAME_SIZE:]
             except PacketError:
-                print("Packet error, offsetting buffer by one")
+                print("Packet error; offsetting buffer by one, retrying...")
                 self.buffer = self.buffer[1:]
+
+                continue
 
             return frame

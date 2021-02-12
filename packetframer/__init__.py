@@ -9,6 +9,7 @@ class Main:
         pass
 
 frame_reader = FrameReader()
+frame_reader.feed(b"\x00" * 20)
 
 frame = EncodeFrame()
 frame.payload = b"Hello there packet boy!"

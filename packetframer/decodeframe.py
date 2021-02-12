@@ -4,6 +4,7 @@ from packetframer.exceptions import *
 import struct
 import hashlib
 from reedsolo import RSCodec
+from reedsolo import ReedSolomonError
 
 class DecodeFrame:
     def __init__(self, payload):
@@ -12,7 +13,7 @@ class DecodeFrame:
 
             try:
                 decoded_payload = rsc.decode(payload)[0]
-            except:
+            except ReedSolomonError:
                 raise PacketError("Corrupted packet, too many ECC errors")
         else:
             decoded_payload = payload
