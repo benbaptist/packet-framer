@@ -1,10 +1,16 @@
 from packetframer import PacketFramer
 
-import time
+TEST_PATH = "/tmp/amazing_fifo"
 
-framer = PacketFramer(fh_read=open("/tmp/testfile", "rb"))
+framer = PacketFramer(
+    fh_read=open(TEST_PATH, "rb")
+)
 
 while True:
-    print("RECV", framer.read_packet())
+    packet = framer.read_packet()
 
-    time.sleep(.01)
+    if not packet:
+        print("All done!")
+        break
+
+    print("Read", packet)

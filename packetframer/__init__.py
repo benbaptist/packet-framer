@@ -30,6 +30,7 @@ class PacketFramer:
     def write_bytes(self, data):
         if self.fh_write:
             self.fh_write.write(data)
+            self.fh_write.flush()
         elif self.sh:
             self.sh.write(data)
 
