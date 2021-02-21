@@ -1,0 +1,13 @@
+README.md
+setup.py
+PacketFramer.egg-info/PKG-INFO
+PacketFramer.egg-info/SOURCES.txt
+PacketFramer.egg-info/dependency_links.txt
+PacketFramer.egg-info/top_level.txt
+packetframer/__init__.py
+packetframer/__version__.py
+packetframer/decodeframe.py
+packetframer/encodeframe.py
+packetframer/exceptions.py
+packetframer/framereader.py
+packetframer/globals.py
