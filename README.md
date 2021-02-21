@@ -20,4 +20,4 @@ Each packet is encapsulated with error correction, if enabled*. This is the firs
 
 Next step is to read checksum and verify following packets; if checksum does not match, discard packet and try again.
 
-* Eventually, these things will be adjustable parameters.
+> * Eventually, these things will be adjustable parameters.
