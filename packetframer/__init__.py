@@ -35,11 +35,18 @@ class PacketFramer:
             self.sh.write(data)
 
     def read_packet(self):
-        while True:
-            payload = self.read_bytes(MAX_FRAME_SIZE)
+        read_len = 4
+        payload = b""
 
-            if len(payload) == 0:
+        while True:
+            raw = self.read_bytes(read_len)
+
+            print(read_len)
+
+            if len(raw) == 0:
                 return
+
+            payload += raw
 
             self.frame_reader.feed(payload)
 
@@ -47,6 +54,9 @@ class PacketFramer:
 
             if frame:
                 return frame
+
+            if read_len < 256:
+                read_len += 1
 
     def write_packet(self, data):
         frame = EncodeFrame()

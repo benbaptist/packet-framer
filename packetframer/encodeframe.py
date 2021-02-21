@@ -10,19 +10,12 @@ class EncodeFrame:
 
     def ecc(self, data):
         if ERROR_CORRECTION > 0:
-            rsc = RSCodec(ERROR_CORRECTION)
+            ecc_len = int(len(self.payload) * ERROR_CORRECTION)
+            print("ecc length", ecc_len)
+            rsc = RSCodec(ecc_len)
             return rsc.encode(data)
         else:
             return data
-
-    def pad(self, data, length):
-        assert len(data) <= length, "Length of data > specified length"
-
-        if len(data) < length:
-            delta = length - len(data)
-            data += b"\xff" * delta
-
-        return data
 
     def split_n(self, data, nth):
         return [data[i:i+nth] for i in range(0, len(data), nth)]
@@ -34,19 +27,16 @@ class EncodeFrame:
 
     @property
     def digest(self):
-        # Pad payload to MAX_PACKET_SIZE
-        payload = self.pad(self.payload, MAX_PACKET_SIZE)
+        payload = self.payload
 
         # Create checksum of payload
         digested = self.checksum(payload)
         digested += payload
 
+        # Length of payload
+        digested += struct.pack("B", len(payload))
+
         # Wrap entire payload in error correction
         digested = self.ecc(digested)
 
         return digested
-
-if __name__ == "__main__":
-    frame = EncodeFrame()
-    frame.payload = b"Hello there packet boy!"
-    print(frame.digest, len(frame.digest))

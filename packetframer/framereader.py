@@ -11,16 +11,40 @@ class FrameReader:
 
     def read_frame(self):
 
-        while len(self.buffer) >= MAX_FRAME_SIZE:
+        buffer = self.buffer[0:]
+
+        while len(buffer) >= 4:
+
+            # Offset from left
 
             try:
-                frame = DecodeFrame(self.buffer[0:MAX_FRAME_SIZE])
+                frame = DecodeFrame(buffer)
 
-                self.buffer = self.buffer[MAX_FRAME_SIZE:]
+                # self.buffer = self.buffer[MAX_FRAME_SIZE:]
             except PacketError:
-                print("Packet error; offsetting buffer by one, retrying...")
-                self.buffer = self.buffer[1:]
+                # print("Packet error; offsetting buffer by one, retrying...")
+                buffer = buffer[1:]
 
                 continue
 
             return frame.payload
+
+        buffer = self.buffer[0:]
+
+        while len(buffer) >= 4:
+
+            # Offset from right
+
+            try:
+                frame = DecodeFrame(buffer)
+
+                # self.buffer = self.buffer[MAX_FRAME_SIZE:]
+            except PacketError:
+                # print("Packet error; offsetting buffer by one, retrying...")
+                buffer = buffer[:-1]
+
+                continue
+
+            return frame.payload
+
+        print("Failed to decode packet with offsetting")
