@@ -1,5 +1,7 @@
 CHECKSUM_SIZE = 4
 ERROR_CORRECTION = .5
+
+# Irrelevant now
 MAX_FRAME_SIZE = 64
 
 # Never change this formula!

@@ -1,5 +1,7 @@
 A simple, weird little packet framing system. Can be used in conjunction with a modem for radio communication, serial lines, and more.
 
+This is the variable-length packet version. It's a failure, and doesn't work. 
+
 # Quickstart
 
 ## Install packetframer
@@ -12,6 +14,17 @@ pip3 install https://github.com/benbaptist/packet-framer/archive/main.zip
 ```
 
 ## Try the example encoders
+In one console, run:
+```
+python3 examples/test-write.py
+```
+
+and in another, run:
+```
+python3 examples/test-read.py
+```
+
+Magic will ensue. Clearly.
 
 # Technical Info
 Packet frames are variable in length, up to a maximum of 256 bytes. Length and syncing is determined by reading a minimum of 4 bytes, attempting to decode/verify a packet, and if it fails, attempt decode again, increasing length by one byte, or offsetting by one byte, until it succeeds.
