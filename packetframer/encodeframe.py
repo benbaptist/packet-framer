@@ -39,6 +39,11 @@ class EncodeFrame:
 
         # Create checksum of payload
         digested = self.checksum(payload)
+
+        # Length of actual payload, unpadded
+        digested += struct.pack("H", len(self.payload))
+
+        # Actual payload, padded
         digested += payload
 
         # Wrap entire payload in error correction

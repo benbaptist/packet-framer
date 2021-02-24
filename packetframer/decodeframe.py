@@ -19,12 +19,16 @@ class DecodeFrame:
             decoded_payload = payload
 
         checksum = decoded_payload[0:CHECKSUM_SIZE]
-        packet_payload = decoded_payload[CHECKSUM_SIZE:]
+
+        packet_length = struct.unpack("H",
+                        decoded_payload[CHECKSUM_SIZE:CHECKSUM_SIZE + 2]
+                        )[0]
+        packet_payload = decoded_payload[CHECKSUM_SIZE + 2:]
 
         if self.checksum(packet_payload) != checksum:
             raise PacketError("Checksum did not match")
 
-        self.payload = packet_payload
+        self.payload = packet_payload[0:packet_length]
 
     def checksum(self, data):
         h = hashlib.shake_128()
